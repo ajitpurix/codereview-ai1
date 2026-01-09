@@ -4,8 +4,7 @@ import type React from "react"
 
 import { useState } from "react"
 import Link from "next/link"
-import { usePathname, useRouter } from "next/navigation"
-import { useClerk, useUser } from "@clerk/nextjs"
+import { usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import {
@@ -44,47 +43,6 @@ interface DashboardLayoutProps {
 export function DashboardLayout({ children }: DashboardLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const pathname = usePathname()
-  const router = useRouter()
-  const { signOut } = useClerk()
-  const { user } = useUser()
-
-  const handleSignOut = async () => {
-    try {
-      await signOut()
-      router.push("/login")
-    } catch (error) {
-      console.error("Sign out failed:", error)
-      // Optionally show error toast/message to user
-    }
-  }
-
-  // Get user's display name or fallback to email
-  const getUserName = () => {
-    if (user?.firstName && user?.lastName) {
-      return `${user.firstName} ${user.lastName}`
-    }
-    if (user?.firstName) {
-      return user.firstName
-    }
-    if (user?.emailAddresses?.[0]?.emailAddress) {
-      return user.emailAddresses[0].emailAddress.split('@')[0]
-    }
-    return "User"
-  }
-
-  // Get user's initials for avatar
-  const getUserInitials = () => {
-    if (user?.firstName && user?.lastName) {
-      return `${user.firstName[0]}${user.lastName[0]}`.toUpperCase()
-    }
-    if (user?.firstName) {
-      return user.firstName[0].toUpperCase()
-    }
-    if (user?.emailAddresses?.[0]?.emailAddress) {
-      return user.emailAddresses[0].emailAddress[0].toUpperCase()
-    }
-    return "U"
-  }
 
   return (
     <div className="flex min-h-screen">
@@ -165,9 +123,9 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="gap-2">
                   <div className="flex h-7 w-7 items-center justify-center rounded-full bg-accent text-xs font-medium text-accent-foreground">
-                    {getUserInitials()}
+                    JD
                   </div>
-                  <span className="hidden sm:inline">{getUserName()}</span>
+                  <span className="hidden sm:inline">John Doe</span>
                   <ChevronDown className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
@@ -176,8 +134,8 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                   <Link href="/settings">Settings</Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer">
-                  Sign out
+                <DropdownMenuItem asChild>
+                  <Link href="/login">Sign out</Link>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
