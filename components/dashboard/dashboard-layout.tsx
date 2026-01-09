@@ -49,8 +49,13 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   const { user } = useUser()
 
   const handleSignOut = async () => {
-    await signOut()
-    router.push("/login")
+    try {
+      await signOut()
+      router.push("/login")
+    } catch (error) {
+      console.error("Sign out failed:", error)
+      // Optionally show error toast/message to user
+    }
   }
 
   // Get user's display name or fallback to email
